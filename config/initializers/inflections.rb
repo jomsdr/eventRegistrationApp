@@ -14,3 +14,8 @@
 # ActiveSupport::Inflector.inflections(:en) do |inflect|
 #   inflect.acronym "RESTful"
 # end
+
+ActiveSupport::Inflector.inflections(:en) do |inflect|
+  # Tell Rails that 'jwt_denylist' is both singular and plural
+  inflect.irregular 'jwt_denylist', 'jwt_denylist'
+end

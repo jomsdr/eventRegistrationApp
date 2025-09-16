@@ -1,7 +1,6 @@
 class EventsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_event, only: [:show, :edit, :update, :destroy, :join :leave]
-    # before_action :authorize_admin!, only: [:new, :create, :edit, :update, :destroy]
 
     def index
         @events = Event.all
@@ -35,6 +34,7 @@ class EventsController < ApplicationController
         head :no_content
     end
 
+    # registrations controller create and destroy update
     def join
         registration = current_user.event_registrations.build(event: @event)
         if registration.save
@@ -61,11 +61,5 @@ class EventsController < ApplicationController
 
     def event_params
         params.require(:event).permit(:title, :description, :date, :location)
-    end
-
-    def check_admin
-        unless current_user.admin?
-            redirect_to events_path, alert: "You are not authorized to do this."
-        end
     end
 end
