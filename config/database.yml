@@ -118,6 +118,6 @@ production:
   <<: *default
   database: event_registration_app_production
 
-  cable:
-    <<: *default
-    database: event_registration_app_production
+cable:
+  <<: *default
+  database: event_registration_app_production
