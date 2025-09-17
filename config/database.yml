@@ -12,17 +12,17 @@
 # Configure Using Gemfile
 # gem "pg"
 #
-# default: &default
-#   adapter: postgresql
-#   encoding: unicode
+default: &default
+  adapter: postgresql
+  encoding: unicode
 #   # For details on connection pooling, see Rails configuration guide
 #   # https://guides.rubyonrails.org/configuring.html#database-pooling
 #   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 
-# development:
-#   <<: *default
-#   database: event_registration_app_development
+development:
+  <<: *default
+  database: event_registration_app_development
 
 #   # The specified database role being used to connect to PostgreSQL.
 #   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -78,46 +78,47 @@
 # # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # # for a full overview on how database connection configuration can be specified.
 # #
-# production:
-#   primary: &primary_production
-#     <<: *default
-#     database: event_registration_app_production
-#     username: event_registration_app
-#     password: <%= ENV["EVENT_REGISTRATION_APP_DATABASE_PASSWORD"] %>
-#   cache:
-#     <<: *primary_production
-#     database: event_registration_app_production_cache
-#     migrations_paths: db/cache_migrate
-#   queue:
-#     <<: *primary_production
-#     database: event_registration_app_production_queue
-#     migrations_paths: db/queue_migrate
-#   cable:
-#     <<: *primary_production
-#     database: event_registration_app_production_cable
-#     migrations_paths: db/cable_migrate
-
-
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  host: <%= ENV['DATABASE_URL'] %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV['PG_USERNAME'] %>
-  password: <%= ENV['PG_PASSWORD'] %>
-
-development:
-  <<: *default
-  database: event_registration_app_development
-
-test:
-  <<: *default
-  database: event_registration_app_test
-
 production:
-  <<: *default
-  database: event_registration_app_production
+  primary: &primary_production
+    <<: *default
+    database: event_registration_app_production
+    url: <%= ENV['DATABASE_URL'] %>
+    username: <%= ENV['PG_USERNAME'] %>
+    password: <%= ENV['PG_PASSWORD'] %>
+  cache:
+    <<: *primary_production
+    database: event_registration_app_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: event_registration_app_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: event_registration_app_production_cable
+    migrations_paths: db/cable_migrate
 
-cable:
-  <<: *default
-  database: event_registration_app_production
+
+# default: &default
+#   adapter: postgresql
+#   encoding: unicode
+#   host: <%= ENV['DATABASE_URL'] %>
+#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+#   username: <%= ENV['PG_USERNAME'] %>
+#   password: <%= ENV['PG_PASSWORD'] %>
+
+# development:
+#   <<: *default
+#   database: event_registration_app_development
+
+# test:
+#   <<: *default
+#   database: event_registration_app_test
+
+# production:
+#   <<: *default
+#   database: event_registration_app_production
+
+# cable:
+#   <<: *default
+#   database: event_registration_app_production
