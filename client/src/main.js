@@ -16,6 +16,7 @@ app.use(pinia);
 
 // Restore auth token if present
 const sessionManager = useSessionManagerStore();
+sessionManager.hydrate()
 const localAuthToken = localStorage.getItem('auth_token');
 if (localAuthToken && localAuthToken !== 'undefined') {
   sessionManager.auth_token = localAuthToken;

@@ -96,15 +96,20 @@ const handleSignup = async () => {
     return;
   }
 
- try {
+  try {
     await sessionManager.registerUser({
       user: {
+        name: form.value.name,
         email: form.value.email,
         password: form.value.password,
         password_confirmation: form.value.confirmPassword,
       },
     });
-    router.push("/dashboard");
+    if (sessionManager.isAdmin) {
+      router.push("/admin");
+    } else {
+      router.push("/events");
+    }
   } catch (error) {
     console.error("Failed to sign up:", error);
     alert("Signup failed. Please try again.");

@@ -61,7 +61,12 @@ const handleLogin = async () => {
         password: form.value.password,
       },
     });
-    router.push("/dashboard");
+
+    if (sessionManager.isAdmin) {
+      router.push('/admin');
+    } else {
+      router.push('/events');
+    }
   } catch (error) {
     console.error("Login failed:", error);
     alert("Invalid email or password");

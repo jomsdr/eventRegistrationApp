@@ -11,14 +11,37 @@ export const useSessionManagerStore = defineStore('sessionManager', {
       email: null,
       username: null,
     },
+    hydrated: false,
   }),
   getters: {
     getAuthToken: (state) => state.auth_token,
     getUserID: (state) => state.user?.id,
     getUserEmail: (state) => state.user?.email,
+    getUserRole: (state) => state.user?.role,
+    isAdmin: (state) => state.user?.role === 'admin',
     isLoggedIn: (state) => !!state.auth_token,
   },
   actions: {
+    async hydrate() {
+      // Hydrate auth_token from localStorage
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        this.auth_token = token;
+        axios.defaults.headers.common['Authorization'] = token;
+      }
+      // Fetch user profile if token exists and user is not set
+      if (token && (!this.user || !this.user.email)) {
+        try {
+          const res = await axios.get(`${API_URL}/member-data`, {
+            headers: { Authorization: token }
+          });
+          this.user = res.data.user;
+        } catch (e) {
+          this.resetUserInfo();
+        }
+      }
+      this.hydrated = true;
+    },
     async registerUser(payload) {
       const response = await axios.post(`${API_URL}/users`, payload);
       this.setUserInfo(response);
@@ -66,3 +89,4 @@ export const useSessionManagerStore = defineStore('sessionManager', {
     },
   },
 });
+
