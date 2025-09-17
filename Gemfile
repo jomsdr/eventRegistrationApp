@@ -35,11 +35,9 @@ gem "thruster", require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem "rack-cors"
 
-gem 'dotenv-rails', groups: [:development, :test]
-
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  # gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
@@ -53,3 +51,5 @@ gem "devise", "~> 4.9"
 gem "devise-jwt", "~> 0.12.1"
 
 gem "csv", "~> 3.3"
+
+gem "dotenv-rails", "~> 3.1"

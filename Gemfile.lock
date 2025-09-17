@@ -88,9 +88,6 @@ GEM
     crass (1.0.6)
     csv (3.3.5)
     date (3.4.1)
-    debug (1.11.0)
-      irb (~> 1.10)
-      reline (>= 0.3.8)
     devise (4.9.4)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -338,10 +335,9 @@ DEPENDENCIES
   bootsnap
   brakeman
   csv (~> 3.3)
-  debug
   devise (~> 4.9)
   devise-jwt (~> 0.12.1)
-  dotenv-rails
+  dotenv-rails (~> 3.1)
   kamal
   pg (~> 1.1)
   puma (>= 5.0)
