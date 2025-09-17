@@ -1,25 +1,28 @@
 <template>
   <div v-bind="$attrs" class="min-h-screen bg-zinc-100 text-zinc-900 flex flex-col items-center w-full px-4 py-8">
     <div class="w-full max-w-xl bg-white rounded-lg shadow-md p-8">
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold mb-2">{{ event.title }}</h1>
-        <div class="text-gray-600 mb-1">
-          <span class="font-medium">Date:</span> {{ formatDate(event.date) }}
-          <span class="mx-2">|</span>
-          <span class="font-medium">Location:</span> {{ event.location }}
+      <div v-if="eventLoading" class="text-gray-500 text-center py-8">Loading event details...</div>
+      <template v-else>
+        <div class="mb-6">
+          <h1 class="text-3xl font-bold mb-2">{{ event.title }}</h1>
+          <div class="text-gray-600 mb-1">
+            <span class="font-medium">Date:</span> {{ formatDate(event.date) }}
+            <span class="mx-2">|</span>
+            <span class="font-medium">Location:</span> {{ event.location }}
+          </div>
         </div>
-      </div>
-      <div class="mb-6">
-        <h2 class="text-lg font-semibold mb-2">Description</h2>
-        <p class="whitespace-pre-line text-gray-800">{{ event.description }}</p>
-      </div>
-      <div class="flex gap-2">
-        <Button variant="outline" @click="goToEdit">Edit</Button>
-        <Button variant="destructive" class="hover:bg-red-700" @click="goToDelete">Delete</Button>
-        <Button @click="goToList">Back to List</Button>
-      </div>
+        <div class="mb-6">
+          <h2 class="text-lg font-semibold mb-2">Description</h2>
+          <p class="whitespace-pre-line text-gray-800">{{ event.description }}</p>
+        </div>
+        <div class="flex gap-2">
+          <Button variant="outline" @click="goToEdit">Edit</Button>
+          <Button variant="destructive" class="hover:bg-red-700" @click="goToDelete">Delete</Button>
+          <Button @click="goToList">Back to List</Button>
+        </div>
+      </template>
     </div>
-  <RegistrationForm v-if="event.id" :eventId="event.id" class="mt-8 w-full max-w-xl" @registered="fetchRegistrations" />
+    <RegistrationForm v-if="event.id" :eventId="event.id" class="mt-8 w-full max-w-xl" @registered="fetchRegistrations" />
 
     <div v-if="event.id" class="w-full max-w-xl mt-8">
       <div class="bg-white rounded-lg shadow-md p-8">
@@ -57,6 +60,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 const route = useRoute();
 const router = useRouter();
 const event = ref({});
+const eventLoading = ref(true);
 
 const registrations = ref([]);
 const loading = ref(true);
@@ -64,11 +68,14 @@ const sessionManager = useSessionManagerStore();
 
 
 const fetchEvent = async () => {
+  eventLoading.value = true;
   try {
     const res = await axios.get(`${API_URL}/events/${route.params.id}`);
     event.value = res.data;
   } catch (error) {
     event.value = {};
+  } finally {
+    eventLoading.value = false;
   }
 };
 
