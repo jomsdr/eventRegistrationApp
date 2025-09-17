@@ -8,11 +8,14 @@ Rails.application.routes.draw do
 
   get '/member-data', to: 'members#show'
   
+  # Confusing AF specifications so ill leave it there
+
   resources :events do
     member do
       post 'join'
       delete 'leave'
     end
+    resources :registrations, only: [:index, :show, :create, :update, :destroy]
   end
 
   # Admin-only routes
@@ -22,6 +25,7 @@ Rails.application.routes.draw do
         delete :bulk_delete   # Bulk delete events
         patch :bulk_close     # Bulk close events
         get :search           # Search events
+        get :export           # Export events list
       end
     end
 

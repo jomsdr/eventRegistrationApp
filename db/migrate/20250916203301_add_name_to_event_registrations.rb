@@ -1,0 +1,5 @@
+class AddNameToEventRegistrations < ActiveRecord::Migration[8.0]
+  def change
+    add_column :event_registrations, :name, :string
+  end
+end

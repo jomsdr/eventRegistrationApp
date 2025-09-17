@@ -4,6 +4,7 @@ class Admin::EventsController < ApplicationController
 
     def index
         @events = Event.all
+        render json: @events
     end
 
     def search
@@ -11,14 +12,23 @@ class Admin::EventsController < ApplicationController
         render :index
     end
 
-    def bulk_delete
-        Event.where(id: params[:event_ids]).destroy_all
-        redirect_to admin_events_path, notice: "Selected events deleted successfully."
+    def destroy
+        event = Event.find(params[:id])
+        event.destroy
+        head :no_content
     end
 
-    def bulk_close
-        Event.where(id: params[:event_ids]).update_all(status: "closed")
-        redirect_to admin_events_path, notice: "Selected events closed successfully."
+    def bulk_delete
+        ids = params[:event_ids] || params[:ids] || params.dig(:event, :event_ids)
+        Event.where(id: ids).destroy_all
+        if request.format.json?
+            render json: { success: true }
+        end
+    end
+
+    def export
+        events = Event.all
+        send_data events.to_csv, filename: "events-#{Date.today}.csv"
     end
 
     private

@@ -3,11 +3,13 @@ class User < ApplicationRecord
          :jwt_authenticatable,
          jwt_revocation_strategy: JwtDenylist
 
+
   # Role management
   enum :role, { user: "user", admin: "admin" }
 
-  # Validation to ensure role is always set
+  # Validations
   validates :role, presence: true, inclusion: { in: roles.keys }
+  validates :name, presence: true, length: { maximum: 100 }
 
   # Associations
 
