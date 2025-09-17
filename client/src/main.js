@@ -8,6 +8,17 @@ import axios from 'axios';
 // Import your Pinia store
 import { useSessionManagerStore } from '@/store/sessionManager';
 
+// Add Axios interceptor for network/server errors
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    if (!error.response) {
+      alert('Server is unavailable or restarting. Please try again in a moment.');
+    }
+    return Promise.reject(error);
+  }
+);
+
 const app = createApp(App);
 const pinia = createPinia();
 
@@ -23,6 +34,5 @@ if (localAuthToken && localAuthToken !== 'undefined') {
   axios.defaults.headers.common['Authorization'] = localAuthToken;
   // Optionally, you can set user info from localStorage if you store it
 }
-
 
 app.mount('#app');
