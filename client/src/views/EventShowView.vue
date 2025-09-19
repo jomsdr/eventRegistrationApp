@@ -16,8 +16,8 @@
           <p class="whitespace-pre-line text-gray-800">{{ event.description }}</p>
         </div>
         <div class="flex gap-2">
-          <Button variant="outline" @click="goToEdit">Edit</Button>
-          <Button variant="destructive" class="hover:bg-red-700" @click="goToDelete">Delete</Button>
+          <Button v-if="canEditOrDelete" variant="outline" @click="goToEdit">Edit</Button>
+          <Button v-if="canEditOrDelete" variant="destructive" class="hover:bg-red-700" @click="goToDelete">Delete</Button>
           <Button @click="goToList">Back to List</Button>
         </div>
       </template>
@@ -36,8 +36,8 @@
               <div class="text-xs text-gray-500">{{ reg.email }}</div>
             </div>
             <div class="flex gap-2">
-              <Button size="sm" variant="outline" @click="goToEditRegistration(reg)">Edit</Button>
-              <Button size="sm" variant="destructive" @click="deleteRegistration(reg.id)">Delete</Button>
+              <Button v-if="canEditOrDelete" size="sm" variant="outline" @click="goToEditRegistration(reg)">Edit</Button>
+              <Button v-if="canEditOrDelete" size="sm" variant="destructive" @click="deleteRegistration(reg.id)">Delete</Button>
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@
 
 <script setup>
 defineOptions({ inheritAttrs: false });
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
@@ -142,4 +142,10 @@ async function deleteRegistration(id) {
     alert(e.response?.data?.error || 'Failed to delete registration.');
   }
 }
+
+const canEditOrDelete = computed(() => {
+  if (sessionManager.isAdmin) return true;
+  if (!event.value || !sessionManager.user) return false;
+  return event.value.user_id === sessionManager.user.id;
+});
 </script>

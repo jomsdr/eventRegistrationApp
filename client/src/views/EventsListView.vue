@@ -30,8 +30,8 @@
             </div>
             <div class="flex gap-2 mt-4 md:mt-0 md:ml-6">
               <Button size="sm" variant="outline" class="hover:gray-50" @click="goToShow(event.id)">Show</Button>
-              <Button size="sm" variant="outline" class="hover:bg-gray-50" @click="goToEdit(event.id)">Edit</Button>
-              <Button size="sm" variant="destructive" class="hover:bg-red-700" @click="handleDelete(event.id)">Delete</Button>
+              <Button v-if="canEditOrDelete(event)" size="sm" variant="outline" class="hover:bg-gray-50" @click="goToEdit(event.id)">Edit</Button>
+              <Button v-if="canEditOrDelete(event)" size="sm" variant="destructive" class="hover:bg-red-700" @click="handleDelete(event.id)">Delete</Button>
             </div>
           </div>
         </div>
@@ -41,52 +41,60 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import { useRouter } from 'vue-router';
-    import axios from 'axios';
-    import { Button } from '@/components/ui/button';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+import { Button } from '@/components/ui/button';
+import { useSessionManagerStore } from '@/store/sessionManager';
 
-    const API_URL = import.meta.env.VITE_API_URL;
-    const router = useRouter();
-    const events = ref([]);
-    const loading = ref(true);
+const API_URL = import.meta.env.VITE_API_URL;
+const router = useRouter();
+const events = ref([]);
+const loading = ref(true);
+const sessionManager = useSessionManagerStore();
 
-    const fetchEvents = async () => {
-    loading.value = true;
-    try {
-        const res = await axios.get(`${API_URL}/events`);
-        events.value = res.data;
-    } catch (error) {
-        events.value = [];
-    } finally {
-        loading.value = false;
-    }
-    };
+const fetchEvents = async () => {
+  loading.value = true;
+  try {
+    const res = await axios.get(`${API_URL}/events`);
+    events.value = res.data;
+  } catch (error) {
+    events.value = [];
+  } finally {
+    loading.value = false;
+  }
+};
 
-    onMounted(fetchEvents);
+onMounted(fetchEvents);
 
-    const goToCreate = () => {
-        router.push('/events/new');
-    };
-    const goToShow = (id) => {
-        router.push(`/events/${id}`);
-    };
-    const goToEdit = (id) => {
-        router.push(`/events/${id}/edit`);
-    };
-    const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this event?')) return;
-        try {
-            await axios.delete(`${API_URL}/events/${id}`);
-            fetchEvents();
-        } catch (error) {
-            alert('Failed to delete event.');
-        }
-    };
+const goToCreate = () => {
+  router.push('/events/new');
+};
+const goToShow = (id) => {
+  router.push(`/events/${id}`);
+};
+const goToEdit = (id) => {
+  router.push(`/events/${id}/edit`);
+};
+const handleDelete = async (id) => {
+  if (!confirm('Are you sure you want to delete this event?')) return;
+  try {
+    await axios.delete(`${API_URL}/events/${id}`);
+    fetchEvents();
+  } catch (error) {
+    alert('Failed to delete event.');
+  }
+};
 
-    function formatDate(dateStr) {
-        if (!dateStr) return '';
-            const date = new Date(dateStr);
-        return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-    }
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function canEditOrDelete(event) {
+  if (sessionManager.isAdmin) return true;
+  if (!event || !sessionManager.user) return false;
+  return event.user_id === sessionManager.user.id;
+}
 </script>
