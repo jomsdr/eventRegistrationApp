@@ -52,4 +52,4 @@ gem "devise-jwt", "~> 0.12.1"
 
 gem "csv", "~> 3.3"
 
-gem "dotenv-rails", "~> 3.1"
+gem "dotenv-rails", "~> 3.2"
